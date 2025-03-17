@@ -40,7 +40,8 @@ public class OSAMethodVisitor extends MethodVisitor {
 
     private static void analyzeMethod(String className, MethodNode methodNode) {
         try {
-            Analyzer<BasicValue> analyzer = new Analyzer<>(new SimpleVerifier());
+            SimpleVerifier verifier = new SimpleVerifier();
+            Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
             Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
             InsnList instrs = methodNode.instructions;
 
@@ -92,18 +93,15 @@ public class OSAMethodVisitor extends MethodVisitor {
         }
         return res;
     }
-    private static String printInstr(AbstractInsnNode instr, Textifier textifier2) {
-        // StringWriter sw = new StringWriter();
-        // Printer printer = new Textifier();
-        // TraceMethodVisitor tmv = new TraceMethodVisitor(printer);
-        // instr.accept(tmv);
-        // return sw.toString();
+    
+    @SuppressWarnings("unused")
+    private static String printInstr(AbstractInsnNode instr) {
         Textifier textifier = new Textifier();
-        TraceMethodVisitor tmv = new TraceMethodVisitor(textifier2);
+        TraceMethodVisitor tmv = new TraceMethodVisitor(textifier);
         instr.accept(tmv);
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        textifier2.print(pw);
+        textifier.print(pw);
         pw.flush();
         return sw.toString().trim();
     }
@@ -111,6 +109,5 @@ public class OSAMethodVisitor extends MethodVisitor {
     private static String getTypeName(Type type) {
         if (type == null) return "uninitialized";
         return type.getClassName();
-    }
-    
+    }    
 }
