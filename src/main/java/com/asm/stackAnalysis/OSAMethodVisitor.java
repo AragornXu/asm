@@ -75,7 +75,7 @@ public class OSAMethodVisitor extends MethodVisitor {
             }
         } catch (AnalyzerException e) {
             System.out.println("Analysis failed for method: " + methodNode.name);
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
     private static List<String> instrStrLst(MethodNode methodNode) {
