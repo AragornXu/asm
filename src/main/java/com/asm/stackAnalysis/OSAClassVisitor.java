@@ -1,11 +1,17 @@
 package com.asm.stackAnalysis;
 
+import java.util.List;
+
+import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
 
+import com.asm.generics.attributes.GenericsAttribute;
+
 public class OSAClassVisitor extends ClassVisitor {
+    private GenericsAttribute genericsAttribute;
     public OSAClassVisitor(int api) {
         super(api);
     }
@@ -21,7 +27,33 @@ public class OSAClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor,
                                         String signature, String[] exceptions) {
         MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
-        return new OSAMethodVisitor(Opcodes.ASM9, methodNode, className);
+        System.out.println("In Class Visitor, Method: " + name);
+        List<Integer> bcIndex = genericsAttribute.getBcIndexForMethod(name);
+        System.out.println("bcIndex: " + bcIndex);
+        List<String> typeList = genericsAttribute.getTypeForMethod(name);
+        System.out.println("typeList: " + typeList);
+        return new OSAMethodVisitor(Opcodes.ASM9, methodNode, className, bcIndex, typeList);
+    }
+
+    @Override
+    public void visitAttribute(Attribute attr){
+        System.out.println("in visit Attribute: ");
+        if (attr instanceof GenericsAttribute) {
+            System.out.println("GenericsAttribute found");
+            GenericsAttribute ga = (GenericsAttribute) attr;
+            List<String> methodList = ga.getMethodList();
+            List<Integer> bcIndex = ga.getBcIndex();
+            List<String> typeList = ga.getTypeList();
+            assert bcIndex.size() == typeList.size();
+            for (int i = 0; i < bcIndex.size(); i++) {
+                String method = methodList.get(i);
+                int intVal = bcIndex.get(i);
+                String strVal = typeList.get(i);
+                System.out.println("method: " + method + ", Int: " + intVal + ", String: " + strVal);
+            }
+            genericsAttribute = ga;
+            super.visitAttribute(attr);
+        }
     }
 
 }

@@ -11,7 +11,7 @@ import org.objectweb.asm.Opcodes;
 
 public class TypeFieldInjector {
     public static void main(String[] args) throws Exception {
-        String file = "/home/j523xu/Desktop/asm/asmProj/genClasses/Foo";
+        String file = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooNested$Inner";
         byte[] bytes = writeClass(file + ".class");
         try (FileOutputStream f = new FileOutputStream(
             file + "_Modified.class")) {

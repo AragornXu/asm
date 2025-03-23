@@ -9,10 +9,12 @@ import org.objectweb.asm.util.TraceClassVisitor;
 
 public class BCPrinter {
     public static void main(String[] args) throws Exception{
+        String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class";
+        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class";
+        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooStacktest$.class";
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooStack.class";
-        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/Foo.class";
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooNested$Inner.class";
-        String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/Foo_Modified.class";
+        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooNested_Modified.class";
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/GenClass2.class";
         PrintWriter writer = new PrintWriter(System.out);
         ClassReader cr = new ClassReader(Files.newInputStream(Paths.get(path)));

@@ -25,10 +25,10 @@ public class OSA1Test {
         osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/FooStacktest$.class");
     }
 
-    // @Test
-    // public void test2() throws Exception{
-    //     OperandStackAnalyzer osa = new OperandStackAnalyzer();
-    //     osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/TestBC1.class");
-    // }
+    @Test
+    public void test2() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+    }
 
 }

@@ -26,7 +26,7 @@ public class TestASMClassReader {
 
 class MyClassVisitor extends ClassVisitor {
     public MyClassVisitor() {
-        super(Opcodes.ASM6);
+        super(Opcodes.ASM9);
     }
 
     @Override
