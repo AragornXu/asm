@@ -1,8 +1,10 @@
 package com.asm.sampleGen;
 
+@SuppressWarnings("UnnecessaryBoxing")
 public class JavaBoxing {
     public static void main(String[] args) {
         // Manual boxing using valueOf
+        
         Integer intBoxed = Integer.valueOf(42);
         Double doubleBoxed = Double.valueOf(3.14);
         Character charBoxed = Character.valueOf('A');

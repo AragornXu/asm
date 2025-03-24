@@ -65,6 +65,7 @@ public class OSAMethodVisitor extends MethodVisitor {
         super.visitEnd();
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     private void analyzeMethod(String className, MethodNode methodNode) {
         try {
             // BasicInterpreter verifier = new BasicInterpreter();
@@ -155,6 +156,7 @@ public class OSAMethodVisitor extends MethodVisitor {
         return sw.toString().trim();
     }
 
+    @SuppressWarnings("unused")
     private String getTypeName(Type type) {
         if (type == null) return "uninitialized";
         return type.getClassName();
