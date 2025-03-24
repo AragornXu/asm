@@ -14,7 +14,7 @@ import org.objectweb.asm.Opcodes;
 public class AttributeAdder {
     public static void main(String[] args) throws Exception {
         String file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
-        byte[] bytes = addAttribute(file + ".class");
+        byte[] bytes = addAttribute1(file + ".class");
         boolean areEqual = Arrays.equals(bytes, Files.readAllBytes(Paths.get(file + ".class")));
         System.out.println("Equal? " + areEqual);
         try (FileOutputStream f = new FileOutputStream(
@@ -26,7 +26,7 @@ public class AttributeAdder {
         }
     }
 
-    public static byte[] addAttribute(String path) throws Exception {
+    public static byte[] addAttribute1(String path) throws Exception {
         ClassReader cr = new ClassReader(Files.newInputStream(Paths.get(path)));
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         ClassVisitor cv = new ClassVisitor(Opcodes.ASM9, cw) {
@@ -35,6 +35,7 @@ public class AttributeAdder {
                 GenericsAttribute attr = new GenericsAttribute();
                 attr.addToAttribute("t1", 12, "int,string");
                 attr.addToAttribute("t1", 21, "double,char");
+                attr.addToAttribute("t1", 38 , "int");
                 System.out.println("Attribute created");
                 visitAttribute(attr);
                 super.visitEnd();

@@ -22,4 +22,11 @@ public class OperandStackAnalyzer {
             new GenericsAttribute()
         }, 0);
     }
+
+    public static void main(String[] args) throws Exception {
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+        // osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class");
+
+    }
 }

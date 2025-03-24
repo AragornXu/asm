@@ -15,7 +15,6 @@ import org.objectweb.asm.tree.analysis.Analyzer;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 import org.objectweb.asm.tree.analysis.BasicValue;
 import org.objectweb.asm.tree.analysis.Frame;
-import org.objectweb.asm.tree.analysis.SimpleVerifier;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
@@ -24,6 +23,7 @@ public class OSAMethodVisitor extends MethodVisitor {
     private MethodNode methodNode;
     private List<Integer> bcIndex;
     private List<String> typeList;
+    private boolean containAttribute = false;
 
     public OSAMethodVisitor(int api) {
         super(api);
@@ -34,6 +34,9 @@ public class OSAMethodVisitor extends MethodVisitor {
         this.className = className;
         this.bcIndex = bcIndex;
         this.typeList = typeList;
+        if (!bcIndex.isEmpty()) {
+            containAttribute = true;
+        }
     }
 
     // @Override
@@ -64,9 +67,22 @@ public class OSAMethodVisitor extends MethodVisitor {
 
     private void analyzeMethod(String className, MethodNode methodNode) {
         try {
-            SimpleVerifier verifier = new SimpleVerifier();
+            // BasicInterpreter verifier = new BasicInterpreter();
+            // Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
+            // Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
+
+            // org.objectweb.asm.tree.analysis.SimpleVerifier verifier = 
+            //     new org.objectweb.asm.tree.analysis.SimpleVerifier(
+                    
+            //     );
+            // Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
+            // Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
+
+            com.asm.stackAnalysis.boxing.BoxingSimpleVerifier verifier 
+                = new com.asm.stackAnalysis.boxing.BoxingSimpleVerifier();
             Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
             Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
+
             InsnList instrs = methodNode.instructions;
 
             System.out.print("in Method Visitor Analyze method, Method: " + methodNode.name + methodNode.desc);
@@ -95,18 +111,20 @@ public class OSAMethodVisitor extends MethodVisitor {
                 List<String> stack = new ArrayList<>();
                 for (int j = 0; j < frame.getStackSize(); j++) {
                     BasicValue value = frame.getStack(j);
-                    stack.add(value == null ? "null" : getTypeName(value.getType()));
+                    // stack.add(value == null ? "null" : getTypeName(value.getType()));
+                    stack.add(value == null ? "null" : value.toString());
                 }
-                System.out.println(" - Stack: " + stack);
-                if (bcIndex.contains(i)){
+                System.out.print(" - Stack: " + stack);
+                if (containAttribute && bcIndex.contains(i)){
                     int idx = bcIndex.indexOf(i);
                     String typeHint = typeList.get(idx);
-                    System.out.println("Type Hint: " + typeHint);
+                    System.out.print("  --Type Hint: " + typeHint);
                 }
+                System.out.println();
             }
         } catch (AnalyzerException e) {
             System.out.println("Analysis failed for method: " + methodNode.name);
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
     private List<String> instrStrLst(MethodNode methodNode) {

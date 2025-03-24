@@ -28,6 +28,12 @@ public class OSA1Test {
     @Test
     public void test2() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/JavaBoxing.class");
+    }
+
+    @Test
+    public void test3() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
         osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
     }
 

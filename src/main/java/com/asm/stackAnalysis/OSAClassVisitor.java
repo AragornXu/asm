@@ -1,5 +1,6 @@
 package com.asm.stackAnalysis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.objectweb.asm.Attribute;
@@ -11,7 +12,7 @@ import org.objectweb.asm.tree.MethodNode;
 import com.asm.generics.attributes.GenericsAttribute;
 
 public class OSAClassVisitor extends ClassVisitor {
-    private GenericsAttribute genericsAttribute;
+    private GenericsAttribute genericsAttribute = null;
     public OSAClassVisitor(int api) {
         super(api);
     }
@@ -28,10 +29,16 @@ public class OSAClassVisitor extends ClassVisitor {
                                         String signature, String[] exceptions) {
         MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
         System.out.println("In Class Visitor, Method: " + name);
-        List<Integer> bcIndex = genericsAttribute.getBcIndexForMethod(name);
-        System.out.println("bcIndex: " + bcIndex);
-        List<String> typeList = genericsAttribute.getTypeForMethod(name);
-        System.out.println("typeList: " + typeList);
+        List<Integer> bcIndex = new ArrayList<>();
+        if (genericsAttribute != null) {
+            bcIndex = genericsAttribute.getBcIndexForMethod(name);
+            System.out.println("bcIndex: " + bcIndex);
+        }
+        List<String> typeList = new ArrayList<>();
+        if (genericsAttribute != null) {
+            typeList = genericsAttribute.getTypeForMethod(name);
+            System.out.println("typeList: " + typeList);
+        }
         return new OSAMethodVisitor(Opcodes.ASM9, methodNode, className, bcIndex, typeList);
     }
 
