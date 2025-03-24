@@ -37,4 +37,10 @@ public class OSA1Test {
         osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
     }
 
+    @Test
+    public void test4() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$_Modified.class");
+    }
+
 }
