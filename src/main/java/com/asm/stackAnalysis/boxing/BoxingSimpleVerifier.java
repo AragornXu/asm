@@ -16,6 +16,9 @@ public class BoxingSimpleVerifier extends SimpleVerifier{
 
     @Override
     public BasicValue newValue(Type type){
+        if (type == null){
+            return BasicValue.UNINITIALIZED_VALUE;
+        }
         BasicValue value = super.newValue(type);
         if (value == null){
             return null;

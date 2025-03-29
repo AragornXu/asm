@@ -31,7 +31,8 @@ public class BoxingBasicValue extends BasicValue{
 
     @Override
     public String toString() {
-        String init = super.toString();
+        String init;
+        init = super.toString();
         if (isBoxedByScala()){
             return init + " (boxed by Scala)";
         } else {
