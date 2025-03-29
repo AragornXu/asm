@@ -11,8 +11,8 @@ import org.objectweb.asm.Label;
 
 @SuppressWarnings("FieldMayBeFinal")
 public class GenericsAttribute extends Attribute {
-    private List<String> methodList = new ArrayList<>();
-    private List<Integer> bcIndex = new ArrayList<>();
+    private List<String> methodList = new ArrayList<>(); //change to method
+    private List<Integer> bcIndex = new ArrayList<>(); //change to offset
     private List<String> typeList = new ArrayList<>();
     private int len;
 

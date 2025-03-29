@@ -3,9 +3,12 @@ package com.asm.stackAnalysis;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -18,22 +21,29 @@ import org.objectweb.asm.tree.analysis.Frame;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
+import com.asm.util.OffsetMethodVisitor;
+
 public class OSAMethodVisitor extends MethodVisitor {
     private String className;
     private MethodNode methodNode;
     private List<Integer> bcIndex;
     private List<String> typeList;
+    // private Map<AbstractInsnNode, Integer> offsetMap = new HashMap<>();
     private boolean containAttribute = false;
+    private Map<Integer, Integer> offsetMap;
 
     public OSAMethodVisitor(int api) {
         super(api);
     }
-    public OSAMethodVisitor(int api, MethodNode methodNode, String className, List<Integer> bcIndex, List<String> typeList) {
+    public OSAMethodVisitor(int api, MethodNode methodNode, String className, 
+            List<Integer> bcIndex, List<String> typeList, Map<Integer, Integer> offsetMap) {
         super(api, methodNode);
         this.methodNode = methodNode;
         this.className = className;
         this.bcIndex = bcIndex;
         this.typeList = typeList;
+        assert offsetMap != null;
+        this.offsetMap = offsetMap;
         if (!bcIndex.isEmpty()) {
             containAttribute = true;
         }
@@ -61,21 +71,21 @@ public class OSAMethodVisitor extends MethodVisitor {
     
     @Override
     public void visitEnd() {
-        analyzeMethod(className, methodNode);
+        System.out.println("In OSA Method Visitor, visitEnd");
+        analyzeMethod(className, methodNode, offsetMap);
         super.visitEnd();
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    private void analyzeMethod(String className, MethodNode methodNode) {
+    public void analyzeMethod(String className, MethodNode methodNode, 
+            Map<Integer, Integer> offsetMap) {
         try {
             // BasicInterpreter verifier = new BasicInterpreter();
             // Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
             // Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
 
             // org.objectweb.asm.tree.analysis.SimpleVerifier verifier = 
-            //     new org.objectweb.asm.tree.analysis.SimpleVerifier(
-                    
-            //     );
+            //     new org.objectweb.asm.tree.analysis.SimpleVerifier();
             // Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
             // Frame<BasicValue>[] frames = analyzer.analyze(className, methodNode);
 
@@ -95,12 +105,13 @@ public class OSAMethodVisitor extends MethodVisitor {
             for (int i = 0; i < instrs.size(); i++) {
                 AbstractInsnNode insn = instrs.get(i);
                 String instrStr = instrStrLst.get(i);
+                int offset = offsetMap.getOrDefault(i, -1);
                 if (insn instanceof LabelNode) {
                     // System.out.print(" ");
-                    System.out.printf("[%3d]  %-64.65s", i, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]  %-64.65s", i, offset, instrStr);
                 } else {
                     // System.out.print("  ");
-                    System.out.printf("[%3d]   %-63.65s", i, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]   %-63.65s", i, offset, instrStr);
                 }
                 
                 // System.out.printf("%-30.30s", instrStr);
@@ -115,6 +126,12 @@ public class OSAMethodVisitor extends MethodVisitor {
                     // stack.add(value == null ? "null" : getTypeName(value.getType()));
                     stack.add(value == null ? "null" : value.toString());
                 }
+                List<String> locals = new ArrayList<>();
+                for (int j = 0; j < frame.getLocals(); j++) {
+                    BasicValue value = frame.getLocal(j);
+                    locals.add(value == null ? "null" : value.toString());
+                }
+                System.out.print(" - Locals: " + locals);
                 System.out.print(" - Stack: " + stack);
                 if (containAttribute && bcIndex.contains(i)){
                     int idx = bcIndex.indexOf(i);
@@ -128,6 +145,7 @@ public class OSAMethodVisitor extends MethodVisitor {
             e.printStackTrace();
         }
     }
+
     private List<String> instrStrLst(MethodNode methodNode) {
         List<String> res = new ArrayList<>();
         Textifier textifier = new Textifier();
@@ -143,22 +161,4 @@ public class OSAMethodVisitor extends MethodVisitor {
         }
         return res;
     }
-    
-    @SuppressWarnings("unused")
-    private String printInstr(AbstractInsnNode instr) {
-        Textifier textifier = new Textifier();
-        TraceMethodVisitor tmv = new TraceMethodVisitor(textifier);
-        instr.accept(tmv);
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        textifier.print(pw);
-        pw.flush();
-        return sw.toString().trim();
-    }
-
-    @SuppressWarnings("unused")
-    private String getTypeName(Type type) {
-        if (type == null) return "uninitialized";
-        return type.getClassName();
-    }    
 }

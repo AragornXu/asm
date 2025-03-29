@@ -2,19 +2,26 @@ package com.asm.stackAnalysis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import com.asm.generics.attributes.GenericsAttribute;
+import com.asm.util.OffsetMethodVisitor;
 
 public class OSAClassVisitor extends ClassVisitor {
     private GenericsAttribute genericsAttribute = null;
-    public OSAClassVisitor(int api) {
+    private List<MethodVisitor> methodVisitors = new ArrayList<>();
+    private Map<String, Map<Integer, Integer>> offsetMap;
+
+    public OSAClassVisitor(int api, Map<String, Map<Integer, Integer>> offsetMap) {
         super(api);
+        this.offsetMap = offsetMap;
     }
 
     private String className;
@@ -28,7 +35,7 @@ public class OSAClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor,
                                         String signature, String[] exceptions) {
         MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
-        System.out.println("In Class Visitor, Method: " + name);
+        System.out.println("In OSA Class Visitor, Method: " + name);
         List<Integer> bcIndex = new ArrayList<>();
         if (genericsAttribute != null) {
             bcIndex = genericsAttribute.getBcIndexForMethod(name);
@@ -39,12 +46,20 @@ public class OSAClassVisitor extends ClassVisitor {
             typeList = genericsAttribute.getTypeForMethod(name);
             System.out.println("typeList: " + typeList);
         }
-        return new OSAMethodVisitor(Opcodes.ASM9, methodNode, className, bcIndex, typeList);
+        // OffsetVisitor offsetVisitor = new OffsetVisitor(Opcodes.ASM9, methodNode);
+        // methodNode.accept(offsetVisitor);
+        // System.out.println("In OSAClass Visitor, MethodNode insns: " + methodNode.instructions.size());
+        // Map<AbstractInsnNode, Integer> offsetMap = offsetVisitor.getOffsetMap();
+        // System.out.println("offsetMap: " + offsetMap);
+        OSAMethodVisitor osa = new OSAMethodVisitor(
+            api, methodNode, className, bcIndex, typeList, offsetMap.getOrDefault(name, null));
+        methodVisitors.add(osa);
+        return osa;
     }
 
     @Override
     public void visitAttribute(Attribute attr){
-        System.out.println("in visit Attribute: ");
+        System.out.println("in OSA visit Attribute: ");
         if (attr instanceof GenericsAttribute) {
             System.out.println("GenericsAttribute found");
             GenericsAttribute ga = (GenericsAttribute) attr;
@@ -62,5 +77,26 @@ public class OSAClassVisitor extends ClassVisitor {
             super.visitAttribute(attr);
         }
     }
+
+    // @Override
+    // public void visitEnd() {
+    //     System.out.println("In OSAClassVisitor, visitEnd");
+    //     for (MethodVisitor mv : methodVisitors) {
+    //         if (mv instanceof OSAMethodVisitor) {
+    //             OSAMethodVisitor osa = (OSAMethodVisitor) mv;
+    //             MethodNode methodNode = osa.getMethodNode();
+    //             System.out.println("In OSAClass Visitor, MethodNode insns: " + methodNode.instructions.size());
+    //             // OffsetMethodVisitor offsetVisitor = new OffsetMethodVisitor(Opcodes.ASM9, methodNode);
+    //             // methodNode.accept(offsetVisitor);
+    //             // Map<AbstractInsnNode, Integer> offsetMap = offsetVisitor.getOffsetMap();
+    //             // System.out.println("offsetMap: " + offsetMap);
+    //             osa.analyzeMethod(className, methodNode, 
+    //                 offsetMap.getOrDefault(methodNode.name, null));
+    //         }
+    //     }
+    //     super.visitEnd();
+    // }
+
+    
 
 }

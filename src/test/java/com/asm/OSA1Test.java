@@ -21,8 +21,7 @@ public class OSA1Test {
     @Test
     public void test1() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        // osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/FooStack.class");
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/FooStacktest$.class");
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/archive/FooStacktest$.class");
     }
 
     @Test
