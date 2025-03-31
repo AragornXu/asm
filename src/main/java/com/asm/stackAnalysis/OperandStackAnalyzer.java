@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
 import com.asm.generics.attributes.GenericsAttribute;
+import com.asm.generics.attributes.GenericsMethodAttribute;
 import com.asm.util.OffsetClassVisitor;
 
 public class OperandStackAnalyzer {
@@ -19,6 +19,7 @@ public class OperandStackAnalyzer {
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/LinkedListExample.class";
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/MatrixOperations.class";
         // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooStack.class";
+        System.out.println("Running OperandStackAnalyzer on " + path);
         ClassReader reader = new ClassReader(Files.newInputStream(Paths.get(path)));
         // ClassVisitor bcOffsetVisitor = new ClassVisitor(){
         //     @Override
@@ -31,7 +32,7 @@ public class OperandStackAnalyzer {
         OffsetClassVisitor offsetVisitor = new OffsetClassVisitor(Opcodes.ASM9, stackVisitor, offsetMap);
         // OSAMethodVisitor methodVisitor = new OSAMethodVisitor(Opcodes.ASM9);
         reader.accept(offsetVisitor, new Attribute[] {
-            new GenericsAttribute()
+            new GenericsAttribute(), new GenericsMethodAttribute()
         }, 0);
     }
 

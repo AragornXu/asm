@@ -39,13 +39,20 @@ public class OSA1Test {
     @Test
     public void test4() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$_Modified.class");
     }
 
     @Test
     public void test5() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericClass1.class");
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class");
     }
+
+    @Test
+    public void test6() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+    }
+
 
 }

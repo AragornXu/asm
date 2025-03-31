@@ -20,7 +20,7 @@ public class AddClassAttribute {
                 super.visitEnd();
             }
         };
-        cr.accept(cv, new Attribute[] { new GenericsAttribute() }, 0);
+        cr.accept(cv, new Attribute[] { new GenericsAttribute(), new GenericsMethodAttribute() }, 0);
         return cw.toByteArray();
     }
 }

@@ -8,16 +8,14 @@ import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import com.asm.generics.attributes.GenericsAttribute;
-import com.asm.util.OffsetMethodVisitor;
 
 public class OSAClassVisitor extends ClassVisitor {
     private GenericsAttribute genericsAttribute = null;
     private List<MethodVisitor> methodVisitors = new ArrayList<>();
-    private Map<String, Map<Integer, Integer>> offsetMap;
+    private final Map<String, Map<Integer, Integer>> offsetMap;
 
     public OSAClassVisitor(int api, Map<String, Map<Integer, Integer>> offsetMap) {
         super(api);
@@ -35,7 +33,7 @@ public class OSAClassVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor,
                                         String signature, String[] exceptions) {
         MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
-        System.out.println("In OSA Class Visitor, Method: " + name);
+        System.out.println("In OSA ClassVisitor VisitMethod, Method: " + name);
         List<Integer> bcIndex = new ArrayList<>();
         if (genericsAttribute != null) {
             bcIndex = genericsAttribute.getBcIndexForMethod(name);
@@ -57,9 +55,10 @@ public class OSAClassVisitor extends ClassVisitor {
         return osa;
     }
 
+    //deal with class-level attributes
     @Override
     public void visitAttribute(Attribute attr){
-        System.out.println("in OSA visit Attribute: ");
+        System.out.println("in OSA ClassVisitor visit Attribute: ");
         if (attr instanceof GenericsAttribute) {
             System.out.println("GenericsAttribute found");
             GenericsAttribute ga = (GenericsAttribute) attr;

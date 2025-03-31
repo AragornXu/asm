@@ -13,8 +13,9 @@ public class MethodAttrVisitor extends MethodVisitor{
 
     @Override
     public void visitEnd() {
-        // Add the attribute to the method
-        visitAttribute(attr);
+        if (attr != null) {
+            visitAttribute(attr);
+        }
         super.visitEnd();
     }
     

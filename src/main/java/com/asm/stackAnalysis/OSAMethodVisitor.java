@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.objectweb.asm.Attribute;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -18,6 +19,8 @@ import org.objectweb.asm.tree.analysis.Frame;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
+import com.asm.generics.attributes.GenericsMethodAttribute;
+
 
 public class OSAMethodVisitor extends MethodVisitor {
     private String className;
@@ -27,6 +30,9 @@ public class OSAMethodVisitor extends MethodVisitor {
     // private Map<AbstractInsnNode, Integer> offsetMap = new HashMap<>();
     private boolean containAttribute = false;
     private Map<Integer, Integer> offsetMap;
+    private final boolean printLocal = false;
+    private final boolean printStack = true;
+    private final boolean printTypeHint = true;
 
     public OSAMethodVisitor(int api) {
         super(api);
@@ -49,25 +55,19 @@ public class OSAMethodVisitor extends MethodVisitor {
         return methodNode;
     }
 
-    // @Override
-    // public void visitAttribute(Attribute attr){
-    //     System.out.println("in visit Attribute: ");
-    //     if (attr instanceof GenericsAttribute) {
-    //         System.out.println("GenericsAttribute found");
-    //         GenericsAttribute ga = (GenericsAttribute) attr;
-    //         List<String> methodList = ga.getMethodList();
-    //         List<Integer> bcIndex = ga.getBcIndex();
-    //         List<String> typeList = ga.getTypeList();
-    //         assert bcIndex.size() == typeList.size();
-    //         for (int i = 0; i < bcIndex.size(); i++) {
-    //             String method = methodList.get(i);
-    //             int intVal = bcIndex.get(i);
-    //             String strVal = typeList.get(i);
-    //             System.out.println("method: " + method + "Int: " + intVal + ", String: " + strVal);
-    //         }
-    //     super.visitAttribute(attr);
-    //     }
-    // }
+    @Override
+    public void visitAttribute(Attribute attr){
+        System.out.println("in OSAMethodVisitor, visitAttribute");
+        if (attr instanceof GenericsMethodAttribute){
+            GenericsMethodAttribute gma = (GenericsMethodAttribute) attr;
+            System.out.println("GenericsMethodAttribute found:");
+            this.bcIndex = gma.getBcIndex();
+            this.typeList = gma.getTypeList();
+            System.out.println("bcIndex: " + bcIndex);
+            System.out.println("typeList: " + typeList);
+        }
+        super.visitAttribute(attr);
+    }
     
     @Override
     public void visitEnd() {
@@ -104,6 +104,10 @@ public class OSAMethodVisitor extends MethodVisitor {
             System.out.println("typeList: " + typeList);
             // System.out.println(instrStrLst);
             int offsetMapIndex = 0;
+            /* i is not used in the loop since instrs contains instructions like LINENUMBER
+               so offsetMapIndex is used to track the index of the instruction
+               offsetMapIndex is also used to get the type hints
+            */
             for (int i = 0; i < instrs.size(); i++) {
                 AbstractInsnNode insn = instrs.get(i);
                 if (insn instanceof org.objectweb.asm.tree.LineNumberNode) continue;
@@ -111,12 +115,12 @@ public class OSAMethodVisitor extends MethodVisitor {
                 int offset = offsetMap.getOrDefault(offsetMapIndex, -1);
                 if (insn instanceof LabelNode) {
                     // System.out.print(" ");
-                    System.out.printf("[%3d | offset: %-3d]  %-64.65s", offsetMapIndex, offset, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]  %-61.61s", offsetMapIndex, offset, instrStr);
                 } else {
                     // System.out.print("  ");
-                    System.out.printf("[%3d | offset: %-3d]   %-63.65s", offsetMapIndex, offset, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]   %-60.60s", offsetMapIndex, offset, instrStr);
                 }
-                offsetMapIndex++;
+                
                 // System.out.printf("%-30.30s", instrStr);
                 Frame<BasicValue> frame = frames[i];
                 if (frame == null) {
@@ -134,14 +138,15 @@ public class OSAMethodVisitor extends MethodVisitor {
                     BasicValue value = frame.getLocal(j);
                     locals.add(value == null ? "null" : value.toString());
                 }
-                System.out.print(" - Locals: " + locals);
-                System.out.print(" - Stack: " + stack);
-                if (containAttribute && bcIndex.contains(i)){
-                    int idx = bcIndex.indexOf(i);
+                if (printLocal) System.out.print(" - Locals: " + locals);
+                if (printStack) System.out.print(" - Stack: " + stack);
+                if (printTypeHint && bcIndex.contains(offsetMapIndex)){
+                    int idx = bcIndex.indexOf(offsetMapIndex);
                     String typeHint = typeList.get(idx);
                     System.out.print("  --Type Hint: " + typeHint);
                 }
                 System.out.println();
+                offsetMapIndex++;
             }
         } catch (AnalyzerException e) {
             System.out.println("Analysis failed for method: " + methodNode.name);

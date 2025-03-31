@@ -4,22 +4,25 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.objectweb.asm.Attribute;
 
 public class AttributeAdder {
+    private static String file;
     public static void main(String[] args) throws Exception {
-        String file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
+        //file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
+        // Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
+        
+        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
+        Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
+        
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
-
         AddMethodAttribute attrHelper = new AddMethodAttribute();
         //AddClassAttribute attrHelper = new AddClassAttribute();
-        
-        Attribute attr = genAttribute2(); //change here to the specific attribute adder function
-        
         //byte[] modifiedFile = attrHelper.addClassAttribute(attr, file + ".class");
-        byte[] modifiedFile = attrHelper.addMethodAttribute(attr, file + ".class");
-        
+        byte[] modifiedFile = attrHelper.addMethodAttribute(attrs, file + ".class"); 
         boolean areEqual = Arrays.equals(modifiedFile, originalFile); //should not be equal
         System.out.println("Equal? " + areEqual);
 
@@ -30,6 +33,46 @@ public class AttributeAdder {
             System.out.println("Error writing file: " + e.getMessage());
             //e.printStackTrace();
         }
+    }
+
+    //for testGenericClass1.class
+    public static Map<String, Attribute> genMethodAttr1(){
+        System.out.println("Changing file:" + file);
+        System.out.println("Using genMethodAttr1, for testGenericClass1.class");
+        Map<String, Attribute> attrs = new HashMap<>();
+
+        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
+        attr1.addToAttribute(5, "int");
+        attr1.addToAttribute(12, "double");
+        attr1.addToAttribute(16 , "int");
+        attr1.addToAttribute(21 , "double");
+        attr1.addToAttribute(30 , "double,int");
+        attr1.addToAttribute(37 , "string,char");
+        attr1.addToAttribute(41 , "int");
+        attr1.addToAttribute(45 , "double");
+        attr1.addToAttribute(51 , "int");
+        attrs.put("t1", attr1);
+
+        return attrs;
+    }
+
+    //for testGenericMethod1.class
+    public static Map<String, Attribute> genMethodAttr2(){
+        System.out.println("Changing file:" + file);
+        System.out.println("Using genMethodAttr2, for testGenericMethod1.class");
+        Map<String, Attribute> attrs = new HashMap<>();
+
+        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
+        attr1.addToAttribute(10, "int,string");
+        attr1.addToAttribute(18, "double,char");
+        attrs.put("t1", attr1);
+
+        GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
+        attr2.addToAttribute(9, "int");
+        attr2.addToAttribute(21, "int");
+        attrs.put("t2", attr2);
+
+        return attrs;
     }
 
     //for testGenericMethod1$.class
