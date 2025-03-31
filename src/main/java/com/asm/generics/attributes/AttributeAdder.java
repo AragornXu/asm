@@ -12,11 +12,11 @@ import org.objectweb.asm.Attribute;
 public class AttributeAdder {
     private static String file;
     public static void main(String[] args) throws Exception {
-        //file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
-        // Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
+        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
+        Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
         
-        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
-        Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
+        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
+        // Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
         
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
         AddMethodAttribute attrHelper = new AddMethodAttribute();
@@ -69,7 +69,7 @@ public class AttributeAdder {
 
         GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
         attr2.addToAttribute(9, "int");
-        attr2.addToAttribute(21, "int");
+        attr2.addToAttribute(21, "long");
         attrs.put("t2", attr2);
 
         return attrs;

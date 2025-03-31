@@ -28,9 +28,9 @@ public class OSAMethodVisitor extends MethodVisitor {
     private List<Integer> bcIndex;
     private List<String> typeList;
     // private Map<AbstractInsnNode, Integer> offsetMap = new HashMap<>();
-    private boolean containAttribute = false;
+    private boolean containClassLevelAttribute = false;
     private Map<Integer, Integer> offsetMap;
-    private final boolean printLocal = false;
+    private final boolean printLocal = true;
     private final boolean printStack = true;
     private final boolean printTypeHint = true;
 
@@ -47,7 +47,7 @@ public class OSAMethodVisitor extends MethodVisitor {
         assert offsetMap != null;
         this.offsetMap = offsetMap;
         if (!bcIndex.isEmpty()) {
-            containAttribute = true;
+            containClassLevelAttribute = true;
         }
     }
 
@@ -138,7 +138,6 @@ public class OSAMethodVisitor extends MethodVisitor {
                     BasicValue value = frame.getLocal(j);
                     locals.add(value == null ? "null" : value.toString());
                 }
-                if (printLocal) System.out.print(" - Locals: " + locals);
                 if (printStack) System.out.print(" - Stack: " + stack);
                 if (printTypeHint && bcIndex.contains(offsetMapIndex)){
                     int idx = bcIndex.indexOf(offsetMapIndex);
@@ -146,6 +145,8 @@ public class OSAMethodVisitor extends MethodVisitor {
                     System.out.print("  --Type Hint: " + typeHint);
                 }
                 System.out.println();
+                if (printLocal) System.out.println(" - Locals: " + locals);
+                //if (printLocal) System.out.printf("%-50s - Locals: %s%n", "", locals);
                 offsetMapIndex++;
             }
         } catch (AnalyzerException e) {

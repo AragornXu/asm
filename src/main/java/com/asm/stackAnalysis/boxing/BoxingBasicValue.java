@@ -33,6 +33,8 @@ public class BoxingBasicValue extends BasicValue{
     public String toString() {
         String init;
         init = super.toString();
+        init = init.replace("java/lang", "jvLng")
+                .replace("scala/runtime", "scRt");
         if (isBoxedByScala()){
             return init + " (boxed by Scala)";
         } else {

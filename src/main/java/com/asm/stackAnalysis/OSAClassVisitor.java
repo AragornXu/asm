@@ -34,6 +34,7 @@ public class OSAClassVisitor extends ClassVisitor {
                                         String signature, String[] exceptions) {
         MethodNode methodNode = new MethodNode(Opcodes.ASM9, access, name, descriptor, signature, exceptions);
         System.out.println("In OSA ClassVisitor VisitMethod, Method: " + name);
+        // old code: deals with class level attributes, deprecated GenericsAttribute
         List<Integer> bcIndex = new ArrayList<>();
         if (genericsAttribute != null) {
             bcIndex = genericsAttribute.getBcIndexForMethod(name);
@@ -44,11 +45,6 @@ public class OSAClassVisitor extends ClassVisitor {
             typeList = genericsAttribute.getTypeForMethod(name);
             System.out.println("typeList: " + typeList);
         }
-        // OffsetVisitor offsetVisitor = new OffsetVisitor(Opcodes.ASM9, methodNode);
-        // methodNode.accept(offsetVisitor);
-        // System.out.println("In OSAClass Visitor, MethodNode insns: " + methodNode.instructions.size());
-        // Map<AbstractInsnNode, Integer> offsetMap = offsetVisitor.getOffsetMap();
-        // System.out.println("offsetMap: " + offsetMap);
         OSAMethodVisitor osa = new OSAMethodVisitor(
             api, methodNode, className, bcIndex, typeList, offsetMap.getOrDefault(name, null));
         methodVisitors.add(osa);

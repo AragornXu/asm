@@ -1,13 +1,10 @@
 package com.asm.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 
 public class OffsetMethodVisitor extends MethodVisitor{
     
@@ -15,7 +12,6 @@ public class OffsetMethodVisitor extends MethodVisitor{
     private Map<Integer, Integer> offsetMap;
     private int currentOffset = 0;
     private int currentIndex = 0;
-    private MethodNode methodNode;
 
     public OffsetMethodVisitor(int api, MethodVisitor mv, Map<Integer, Integer> offsetMap) {
         super(api, mv);
@@ -26,14 +22,6 @@ public class OffsetMethodVisitor extends MethodVisitor{
         //     throw new IllegalArgumentException("In OffsetMethodVistor constructor: MethodVisitor is not an instance of MethodNode");
         // }
     }
-
-    // public OffsetMethodVisitor(int api, MethodNode methodNode) {
-    //     super(api, methodNode);
-    //     this.methodNode = methodNode;
-    //     System.out.println("In OffsetVisitor constructor for methodNode: " + methodNode.name);
-    //     System.out.println("In OffsetVisitor constructor for methodNode instr size: " + methodNode.instructions.size());
-        
-    // }
 
     @Override
     public void visitEnd() {
@@ -64,7 +52,15 @@ public class OffsetMethodVisitor extends MethodVisitor{
     public void visitVarInsn(int opcode, int var) {
         // System.out.println("In offsetvistor visitVarInsn, opcode: " + opcode + ", var: " + var);
         super.visitVarInsn(opcode, var);
-        addOffset((var > 255) ? 3 : 2); //TODO: check if this is correct
+        int offset;
+        if (var < 4) {
+            offset = 1;
+        } else if (var < 256) {
+            offset = 2;
+        } else {
+            offset = 3;
+        }
+        addOffset(offset); //TODO: check if this is correct
         
     }
 
