@@ -11,11 +11,14 @@ public class AttributeAdder {
     public static void main(String[] args) throws Exception {
         String file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
-        AddClassAttribute attrHelper = new AddClassAttribute();
+
+        AddMethodAttribute attrHelper = new AddMethodAttribute();
+        //AddClassAttribute attrHelper = new AddClassAttribute();
         
         Attribute attr = genAttribute2(); //change here to the specific attribute adder function
         
-        byte[] modifiedFile = attrHelper.addClassAttribute(attr, file + ".class");
+        //byte[] modifiedFile = attrHelper.addClassAttribute(attr, file + ".class");
+        byte[] modifiedFile = attrHelper.addMethodAttribute(attr, file + ".class");
         
         boolean areEqual = Arrays.equals(modifiedFile, originalFile); //should not be equal
         System.out.println("Equal? " + areEqual);

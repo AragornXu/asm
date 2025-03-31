@@ -3,13 +3,10 @@ package com.asm.stackAnalysis;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LabelNode;
@@ -21,7 +18,6 @@ import org.objectweb.asm.tree.analysis.Frame;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
-import com.asm.util.OffsetMethodVisitor;
 
 public class OSAMethodVisitor extends MethodVisitor {
     private String className;
@@ -47,6 +43,10 @@ public class OSAMethodVisitor extends MethodVisitor {
         if (!bcIndex.isEmpty()) {
             containAttribute = true;
         }
+    }
+
+    public MethodNode getMethodNode() {
+        return methodNode;
     }
 
     // @Override
@@ -79,6 +79,7 @@ public class OSAMethodVisitor extends MethodVisitor {
     @SuppressWarnings("CallToPrintStackTrace")
     public void analyzeMethod(String className, MethodNode methodNode, 
             Map<Integer, Integer> offsetMap) {
+        System.out.println("In OSA Method Visitor, analyzeMethod");
         try {
             // BasicInterpreter verifier = new BasicInterpreter();
             // Analyzer<BasicValue> analyzer = new Analyzer<>(verifier);
@@ -102,18 +103,20 @@ public class OSAMethodVisitor extends MethodVisitor {
             System.out.println("bcIndex: " + bcIndex);
             System.out.println("typeList: " + typeList);
             // System.out.println(instrStrLst);
+            int offsetMapIndex = 0;
             for (int i = 0; i < instrs.size(); i++) {
                 AbstractInsnNode insn = instrs.get(i);
+                if (insn instanceof org.objectweb.asm.tree.LineNumberNode) continue;
                 String instrStr = instrStrLst.get(i);
-                int offset = offsetMap.getOrDefault(i, -1);
+                int offset = offsetMap.getOrDefault(offsetMapIndex, -1);
                 if (insn instanceof LabelNode) {
                     // System.out.print(" ");
-                    System.out.printf("[%3d | offset: %-3d]  %-64.65s", i, offset, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]  %-64.65s", offsetMapIndex, offset, instrStr);
                 } else {
                     // System.out.print("  ");
-                    System.out.printf("[%3d | offset: %-3d]   %-63.65s", i, offset, instrStr);
+                    System.out.printf("[%3d | offset: %-3d]   %-63.65s", offsetMapIndex, offset, instrStr);
                 }
-                
+                offsetMapIndex++;
                 // System.out.printf("%-30.30s", instrStr);
                 Frame<BasicValue> frame = frames[i];
                 if (frame == null) {
