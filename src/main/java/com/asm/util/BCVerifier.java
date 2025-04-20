@@ -10,8 +10,8 @@ import org.objectweb.asm.util.CheckClassAdapter;
 
 public class BCVerifier {
     public static void main(String[] args) {
-        String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$_Modified.class";
-        //String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class";
+        String path = "genClasses/attributes/testGenericClass1$_Modified.class";
+        //String path = "genClasses/attributes/testGenericMethod1$_Modified.class";
         verifyViaClassLoader(path);
         verifyViaClassVerifier(path);
 

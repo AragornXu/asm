@@ -30,8 +30,8 @@ public class OSAMethodVisitor extends MethodVisitor {
     // private Map<AbstractInsnNode, Integer> offsetMap = new HashMap<>();
     private boolean containClassLevelAttribute = false;
     private Map<Integer, Integer> offsetMap;
-    private final boolean printLocal = false;
-    private final boolean printStack = false;
+    private final boolean printLocal = true;
+    private final boolean printStack = true;
     private final boolean printTypeHint = true;
 
     public OSAMethodVisitor(int api) {

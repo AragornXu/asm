@@ -15,16 +15,8 @@ import com.asm.util.OffsetClassVisitor;
 
 public class OperandStackAnalyzer {
     public void run(String path) throws Exception {
-        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/TestBC1.class";
-        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/LinkedListExample.class";
-        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/MatrixOperations.class";
-        // String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/FooStack.class";
         System.out.println("Running OperandStackAnalyzer on " + path);
         ClassReader reader = new ClassReader(Files.newInputStream(Paths.get(path)));
-        // ClassVisitor bcOffsetVisitor = new ClassVisitor(){
-        //     @Override
-        //     public void 
-        // }
         Map<String, Map<Integer, Integer>> offsetMap = new HashMap<>();
         //second visitor
         OSAClassVisitor stackVisitor = new OSAClassVisitor(Opcodes.ASM9, offsetMap);
@@ -38,8 +30,6 @@ public class OperandStackAnalyzer {
 
     public static void main(String[] args) throws Exception {
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
-        // osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class");
-
+        osa.run("genClasses/attributes/testGenericMethod1$_Modified.class");
     }
 }

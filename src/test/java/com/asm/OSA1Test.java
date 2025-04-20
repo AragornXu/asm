@@ -21,79 +21,73 @@ public class OSA1Test {
     @Test
     public void test1() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/archive/FooStacktest$.class");
-    }
-
-    @Test
-    public void test2() throws Exception{
-        OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/JavaBoxing.class");
+        osa.run("genClasses/archive/FooStacktest$.class");
     }
 
     @Test
     public void test3() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$.class");
+        osa.run("genClasses/attributes/testGenericClass1$.class");
     }
 
     @Test
     public void test4() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$_Modified.class");
+        osa.run("genClasses/attributes/testGenericClass1$_Modified.class");
     }
 
     @Test
     public void testGenMethod() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class");
+        osa.run("genClasses/attributes/GenericMethod1.class");
     }
 
     @Test
     public void testGenMethodModified() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1_Modified.class");
+        osa.run("genClasses/attributes/GenericMethod1_Modified.class");
     }
 
     @Test
     public void test7() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+        osa.run("genClasses/attributes/testGenericMethod1$_Modified.class");
     }
 
     @Test
     public void test8() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/GenericNested1.class");
+        osa.run("genClasses/attributes/nested/GenericNested1.class");
     }
 
     @Test
     public void test9() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/GenericNested1$FooInner.class");
+        osa.run("genClasses/attributes/nested/GenericNested1$FooInner.class");
     }
 
     @Test
     public void testNested() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/testGenericNested1$.class");
+        osa.run("genClasses/attributes/nested/testGenericNested1$.class");
     }
 
     @Test
     public void testArrayCopy() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/ArrayCopy$_Modified.class");
+        osa.run("genClasses/scala/ArrayCopy$_Modified.class");
     }
 
     @Test
     public void testChecksum() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Checksum$_Modified.class");
+        osa.run("genClasses/scala/Checksum$_Modified.class");
     }
 
     @Test
     public void testSorting() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Sorting$.class");
+        osa.run("genClasses/scala/Sorting$.class");
     }
 
 

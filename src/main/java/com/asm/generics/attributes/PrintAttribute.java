@@ -12,7 +12,7 @@ import org.objectweb.asm.Opcodes;
 
 public class PrintAttribute {
     public static void main(String[] args) throws IOException{
-        String path = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class";
+        String path = "genClasses/attributes/testGenericMethod1$_Modified.class";
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         ClassReader cr = new ClassReader(bytes);
         cr.accept(new ClassVisitor(Opcodes.ASM9) {

@@ -12,19 +12,19 @@ import org.objectweb.asm.Attribute;
 public class AttributeAdder {
     private static String file;
     public static void main(String[] args) throws Exception {
-        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
+        // file = "genClasses/attributes/testGenericClass1$";
         // Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
         
-        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
+        // file = "genClasses/attributes/testGenericMethod1$";
         // Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
 
-        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1";
+        // file = "genClasses/attributes/GenericMethod1";
         // Map<String, Attribute> attrs = genMethodAttr3(); //change here to the specific attribute adder function
         
-        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/scala/ArrayCopy$";
+        // file = "genClasses/scala/ArrayCopy$";
         // Map<String, Attribute> attrs = genMethodAttr4(); //change here to the specific attribute adder function
 
-        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Checksum$";
+        file = "genClasses/scala/Checksum$";
         Map<String, Attribute> attrs = genMethodAttr5(); //change here to the specific attribute adder function
 
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
@@ -51,15 +51,15 @@ public class AttributeAdder {
         Map<String, Attribute> attrs = new HashMap<>();
 
         GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(5, "int");
-        attr1.addToAttribute(12, "double");
-        attr1.addToAttribute(16 , "int");
-        attr1.addToAttribute(21 , "double");
-        attr1.addToAttribute(30 , "double,int");
-        attr1.addToAttribute(37 , "string,char");
-        attr1.addToAttribute(41 , "int");
-        attr1.addToAttribute(45 , "double");
-        attr1.addToAttribute(51 , "int");
+        attr1.addToAttribute(5, "I");
+        attr1.addToAttribute(12, "D");
+        attr1.addToAttribute(16 , "I");
+        attr1.addToAttribute(21 , "D");
+        attr1.addToAttribute(30 , "D|I");
+        attr1.addToAttribute(37 , "L|C");
+        attr1.addToAttribute(41 , "I");
+        attr1.addToAttribute(45 , "D");
+        attr1.addToAttribute(51 , "I");
         attrs.put("t1", attr1);
 
         return attrs;
@@ -139,22 +139,22 @@ public class AttributeAdder {
     //for testGenericMethod1$.class
     public static GenericsAttribute genAttribute1() {
         GenericsAttribute attr = new GenericsAttribute();
-        attr.addToAttribute("t1", 12, "int,string");
-        attr.addToAttribute("t1", 21, "double,char");
-        attr.addToAttribute("t1", 38 , "int");
+        attr.addToAttribute("t1", 12, "I|L");
+        attr.addToAttribute("t1", 21, "D|C");
+        attr.addToAttribute("t1", 38 , "I");
         return attr;
     }
 
     //for testGenericClass1$.class
     public static GenericsAttribute genAttribute2(){
         GenericsAttribute attr = new GenericsAttribute();
-        attr.addToAttribute("t1", 4, "int");
-        attr.addToAttribute("t1", 10, "double");
-        attr.addToAttribute("t1", 19, "double,int");
-        attr.addToAttribute("t1", 27, "string,char");
-        attr.addToAttribute("t1", 32, "int");
-        attr.addToAttribute("t1", 37, "double");
-        attr.addToAttribute("t1", 44, "int");
+        attr.addToAttribute("t1", 4, "I");
+        attr.addToAttribute("t1", 10, "D");
+        attr.addToAttribute("t1", 19, "D|I");
+        attr.addToAttribute("t1", 27, "L|C");
+        attr.addToAttribute("t1", 32, "I");
+        attr.addToAttribute("t1", 37, "D");
+        attr.addToAttribute("t1", 44, "I");
         return attr;
     }
 }
