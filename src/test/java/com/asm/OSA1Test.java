@@ -43,15 +43,57 @@ public class OSA1Test {
     }
 
     @Test
-    public void test5() throws Exception{
+    public void testGenMethod() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
         osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1.class");
     }
 
     @Test
-    public void test6() throws Exception{
+    public void testGenMethodModified() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1_Modified.class");
+    }
+
+    @Test
+    public void test7() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
         osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$_Modified.class");
+    }
+
+    @Test
+    public void test8() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/GenericNested1.class");
+    }
+
+    @Test
+    public void test9() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/GenericNested1$FooInner.class");
+    }
+
+    @Test
+    public void testNested() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/nested/testGenericNested1$.class");
+    }
+
+    @Test
+    public void testArrayCopy() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/ArrayCopy$_Modified.class");
+    }
+
+    @Test
+    public void testChecksum() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Checksum$_Modified.class");
+    }
+
+    @Test
+    public void testSorting() throws Exception{
+        OperandStackAnalyzer osa = new OperandStackAnalyzer();
+        osa.run("/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Sorting$.class");
     }
 
 

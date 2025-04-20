@@ -1,4 +1,4 @@
-package com.asm.generics;
+package com.asm.archive;
 
 import java.io.FileOutputStream;
 import java.nio.file.Files;

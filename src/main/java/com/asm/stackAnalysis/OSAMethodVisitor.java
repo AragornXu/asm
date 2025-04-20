@@ -30,8 +30,8 @@ public class OSAMethodVisitor extends MethodVisitor {
     // private Map<AbstractInsnNode, Integer> offsetMap = new HashMap<>();
     private boolean containClassLevelAttribute = false;
     private Map<Integer, Integer> offsetMap;
-    private final boolean printLocal = true;
-    private final boolean printStack = true;
+    private final boolean printLocal = false;
+    private final boolean printStack = false;
     private final boolean printTypeHint = true;
 
     public OSAMethodVisitor(int api) {
@@ -111,6 +111,7 @@ public class OSAMethodVisitor extends MethodVisitor {
             for (int i = 0; i < instrs.size(); i++) {
                 AbstractInsnNode insn = instrs.get(i);
                 if (insn instanceof org.objectweb.asm.tree.LineNumberNode) continue;
+                if (insn instanceof org.objectweb.asm.tree.FrameNode) continue;
                 String instrStr = instrStrLst.get(i);
                 int offset = offsetMap.getOrDefault(offsetMapIndex, -1);
                 if (insn instanceof LabelNode) {
@@ -124,7 +125,8 @@ public class OSAMethodVisitor extends MethodVisitor {
                 // System.out.printf("%-30.30s", instrStr);
                 Frame<BasicValue> frame = frames[i];
                 if (frame == null) {
-                    System.out.println(" - Frame is null");
+                    if (printStack) System.out.print(" - Frame is null");
+                    System.out.println();
                     continue;
                 }
                 List<String> stack = new ArrayList<>();
@@ -139,9 +141,10 @@ public class OSAMethodVisitor extends MethodVisitor {
                     locals.add(value == null ? "null" : value.toString());
                 }
                 if (printStack) System.out.print(" - Stack: " + stack);
-                if (printTypeHint && bcIndex.contains(offsetMapIndex)){
-                    int idx = bcIndex.indexOf(offsetMapIndex);
+                if (printTypeHint && bcIndex.contains(offset) && !(insn instanceof org.objectweb.asm.tree.LabelNode)){
+                    int idx = bcIndex.indexOf(offset);
                     String typeHint = typeList.get(idx);
+                    //String typeHint = typeList.get(offsetMapIndex);
                     System.out.print("  --Type Hint: " + typeHint);
                 }
                 System.out.println();

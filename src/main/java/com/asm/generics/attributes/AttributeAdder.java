@@ -12,12 +12,21 @@ import org.objectweb.asm.Attribute;
 public class AttributeAdder {
     private static String file;
     public static void main(String[] args) throws Exception {
-        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
-        Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
+        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericClass1$";
+        // Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
         
         // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/testGenericMethod1$";
         // Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
+
+        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/attributes/GenericMethod1";
+        // Map<String, Attribute> attrs = genMethodAttr3(); //change here to the specific attribute adder function
         
+        // file = "/home/j523xu/Desktop/asm/asmProj/genClasses/scala/ArrayCopy$";
+        // Map<String, Attribute> attrs = genMethodAttr4(); //change here to the specific attribute adder function
+
+        file = "/home/j523xu/Desktop/asm/asmProj/genClasses/scala/Checksum$";
+        Map<String, Attribute> attrs = genMethodAttr5(); //change here to the specific attribute adder function
+
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
         AddMethodAttribute attrHelper = new AddMethodAttribute();
         //AddClassAttribute attrHelper = new AddClassAttribute();
@@ -63,18 +72,70 @@ public class AttributeAdder {
         Map<String, Attribute> attrs = new HashMap<>();
 
         GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(10, "int,string");
-        attr1.addToAttribute(18, "double,char");
+        attr1.addToAttribute(16, "I|L");
+        attr1.addToAttribute(32, "D|C");
         attrs.put("t1", attr1);
 
         GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
-        attr2.addToAttribute(9, "int");
-        attr2.addToAttribute(21, "long");
+        attr2.addToAttribute(14, "I");
+        attr2.addToAttribute(38, "J");
         attrs.put("t2", attr2);
 
         return attrs;
     }
 
+    //for GenericMethod1.class
+    public static Map<String, Attribute> genMethodAttr3(){
+        System.out.println("Changing file:" + file);
+        System.out.println("Using genMethodAttr3, for GenericMethod1.class");
+        Map<String, Attribute> attrs = new HashMap<>();
+
+        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
+        attr1.addToAttribute(0, "M0");
+        attrs.put("identity", attr1);
+
+        GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
+        attr2.addToAttribute(17, "M0");
+        attr2.addToAttribute(26, "M0");
+        attrs.put("printTypeInfo", attr2);
+
+        GenericsMethodAttribute attr3 = new GenericsMethodAttribute();
+        attr3.addToAttribute(15, "M0");
+        attr3.addToAttribute(19, "M1");
+        attrs.put("makeListOfTwo", attr3);
+
+        return attrs;
+    }
+
+    //for ArrayCopy$.class
+    public static Map<String, Attribute> genMethodAttr4(){
+        System.out.println("Changing file:" + file);
+        System.out.println("Using genMethodAttr4, for ArrayCopy$.class");
+        Map<String, Attribute> attrs = new HashMap<>();
+
+        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
+        attr1.addToAttribute(7, "M0");
+        attr1.addToAttribute(23, "M0");
+        attr1.addToAttribute(26, "M0");
+        attrs.put("copy", attr1);
+
+        return attrs;
+    }
+
+    //for Checksum$.class
+    public static Map<String, Attribute> genMethodAttr5(){
+        System.out.println("Changing file:" + file);
+        System.out.println("Using genMethodAttr4, for Checksum$.class");
+        Map<String, Attribute> attrs = new HashMap<>();
+
+        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
+        attr1.addToAttribute(10, "M0");
+        attr1.addToAttribute(22, "M0");
+        attr1.addToAttribute(25, "M0");
+        attrs.put("checksum", attr1);
+
+        return attrs;
+    }
     //for testGenericMethod1$.class
     public static GenericsAttribute genAttribute1() {
         GenericsAttribute attr = new GenericsAttribute();
@@ -96,38 +157,4 @@ public class AttributeAdder {
         attr.addToAttribute("t1", 44, "int");
         return attr;
     }
-
-    // public static byte[] addAttribute1(String path) throws Exception {
-    //     ClassReader cr = new ClassReader(Files.newInputStream(Paths.get(path)));
-    //     ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-    //     ClassVisitor cv = new ClassVisitor(Opcodes.ASM9, cw) {
-    //         @Override
-    //         public void visitEnd(){
-    //             GenericsAttribute attr = new GenericsAttribute();
-    //             attr.addToAttribute("t1", 12, "int,string");
-    //             attr.addToAttribute("t1", 21, "double,char");
-    //             attr.addToAttribute("t1", 38 , "int");
-    //             System.out.println("Attribute created");
-    //             visitAttribute(attr);
-    //             super.visitEnd();
-    //         }
-    //         // failed attempt:
-    //         // @Override
-    //         // public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-    //         //     MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-    //         //     System.out.println("Method: " + name);
-    //         //     if (name.equals("t1")) {
-    //         //         // GenericsAttribute attr = new GenericsAttribute();
-    //         //         // attr.addToAttribute(12, "int,string");
-    //         //         // attr.addToAttribute(21, "double,char");
-    //         //         // System.out.println("Attribute created");
-    //         //         // mv.visitAttribute(attr);
-                    
-    //         //     }
-    //         //     return mv;
-    //         // }
-    //     };
-    //     cr.accept(cv, new Attribute[] { new GenericsAttribute() }, 0);
-    //     return cw.toByteArray();
-    // }
 }
