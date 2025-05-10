@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.objectweb.asm.Attribute;
 
+import com.asm.generics.attributes.reified.FieldType;
 import com.asm.generics.attributes.reified.InstructionTypeArguments;
 import com.asm.generics.attributes.reified.InvokeReturnType;
 import com.asm.generics.attributes.reified.MethodParameterType;
@@ -24,20 +25,9 @@ import com.asm.generics.attributes.reified.typehints.TypeBHint;
 public class AttributeAdder {
     private static String file;
     public static void main(String[] args) throws Exception {
-        // file = "genClasses/attributes/testGenericClass1$";
-        // Map<String, Attribute> attrs = genMethodAttr1(); //change here to the specific attribute adder function
-        
-        // file = "genClasses/attributes/testGenericMethod1$";
-        // Map<String, Attribute> attrs = genMethodAttr2(); //change here to the specific attribute adder function
-
-        // file = "genClasses/attributes/GenericMethod1";
-        // Map<String, Attribute> attrs = genMethodAttr3(); //change here to the specific attribute adder function
-        
-        // file = "genClasses/scala/ArrayCopy$";
-        // Map<String, Attribute> attrs = genMethodAttr4(); //change here to the specific attribute adder function
-
-        // file = "genClasses/scala/Checksum$";
-        // Map<String, Attribute> attrs = genMethodAttr5(); //change here to the specific attribute adder function
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
+        Object[] res = new Object[2];
 
         // file = "genClasses/reified/ArrayCopy1$";
         // Map<String, List<Attribute>> attrs = genArrayCopyAttr(); //change here to the specific attribute adder function
@@ -45,15 +35,25 @@ public class AttributeAdder {
         // file = "genClasses/reified/GenericMethod1";
         // Map<String, List<Attribute>> attrs = genGenericMethod1(); //change here to the specific attribute adder function
 
-        file = "genClasses/reified/testGenericMethod1$";
-        Map<String, List<Attribute>> attrs = genTestGenericMethod1(); //change here to the specific attribute adder function
+        // file = "genClasses/reified/testGenericMethod1$";
+        // methodAttributes = genTestGenericMethod1(); //change here to the specific attribute adder function
 
+        // file = "genClasses/reified/GenericClass1";
+        // res = genGenericClass1(); //change here to the specific attribute adder function
+
+        // file = "genClasses/reified/GenericClass1";
+        // res = genGenericClass1(); //change here to the specific attribute adder function
+
+        file = "genClasses/reified/testGenericClass1$";
+        res = genTestGenericClass1(); //change here to the specific attribute adder function
+
+
+        fieldAttributes = (Map<String, List<Attribute>>) res[0];
+        methodAttributes = (Map<String, List<Attribute>>) res[1];
 
         byte[] originalFile = Files.readAllBytes(Paths.get(file + ".class"));
-        AddMethodAttribute attrHelper = new AddMethodAttribute();
-        //AddClassAttribute attrHelper = new AddClassAttribute();
-        //byte[] modifiedFile = attrHelper.addClassAttribute(attr, file + ".class");
-        byte[] modifiedFile = attrHelper.addMethodAttribute(attrs, file + ".class"); 
+        AddFieldMethodAttribute attrHelper = new AddFieldMethodAttribute();
+        byte[] modifiedFile = attrHelper.addMethodAttribute(methodAttributes, fieldAttributes, file + ".class"); 
         boolean areEqual = Arrays.equals(modifiedFile, originalFile); //should not be equal
         System.out.println("Equal? " + areEqual);
 
@@ -66,10 +66,13 @@ public class AttributeAdder {
         }
     }
 
-    public static Map<String, List<Attribute>> genGenericMethod1(){
+    public static Object[] genGenericMethod1(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genGenericMethod1, for GenericMethod1.class");
-        Map<String, List<Attribute>> res = new HashMap<>();
+        Object[] res = new Object[2];
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
+        res[0] = fieldAttributes;
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
 
         //for method identity
         //def identity[T](x: T): T = x
@@ -94,7 +97,7 @@ public class AttributeAdder {
         identityAttrs.add(methodTypeParameterCountIdentity);
         identityAttrs.add(methodParameterTypeIdentity);
         identityAttrs.add(methodReturnTypeIdentity);
-        res.put("identity", identityAttrs);
+        methodAttributes.put("identity", identityAttrs);
 
         //for method first
         //def first[A, B](x: A, y: B): A = x
@@ -121,76 +124,84 @@ public class AttributeAdder {
         firstAttrs.add(methodTypeParameterCountFirst);
         firstAttrs.add(methodParameterTypeFirst);
         firstAttrs.add(methodReturnTypeFirst);
-        res.put("first", firstAttrs);
-        
+        methodAttributes.put("first", firstAttrs);
+        res[1] = methodAttributes;
         return res;
     }
 
     @SuppressWarnings("Convert2Diamond")
-    public static Map<String, List<Attribute>> genTestGenericMethod1(){
+    public static Object[] genTestGenericMethod1(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genTestGenericMethod1, for testGenericMethod1$.class");
-        Map<String, List<Attribute>> res = new HashMap<>();
+        Object[] res = new Object[2];
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
+        res[0] = fieldAttributes;
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
 
         //for method t1
         //def t1(): Unit
         List<Attribute> t1Attrs = new ArrayList<>();
-        List<TypeAHint> typeAHintsT1 = new ArrayList<>();
+        List<TypeAHint> typeAHints1 = new ArrayList<>();
         //14: invokevirtual #39 // Method bcGen/GenericMethod1.identity:(Ljava/lang/Object;)Ljava/lang/Object;
-        typeAHintsT1.add(new TypeAHint(
+        typeAHints1.add(new TypeAHint(
                         14, 
                         Arrays.asList(TypeA.TYPEA_INT))
         );
         InstructionTypeArguments instructionTypeArgumentsT1 = 
-            new InstructionTypeArguments(typeAHintsT1);
-        typeAHintsT1 = new ArrayList<TypeAHint>();
-        typeAHintsT1.add(
+            new InstructionTypeArguments(typeAHints1);
+        List<TypeAHint> typeAHints2 = new ArrayList<TypeAHint>();
+        typeAHints2.add(
             new TypeAHint(14, 
                 Arrays.asList(TypeA.TYPEA_INT))
         );
         InvokeReturnType invokeReturnTypeT1 =
             new InvokeReturnType(
-                typeAHintsT1.size(), 
-                typeAHintsT1
+                typeAHints2.size(), 
+                typeAHints2
             );  
 
         t1Attrs.add(instructionTypeArgumentsT1);
         t1Attrs.add(invokeReturnTypeT1);
-        res.put("t1", t1Attrs);
+        methodAttributes.put("t1", t1Attrs);
 
         //for method t2
         //def t2(): Unit
         List<Attribute> t2Attrs = new ArrayList<>();
-        List<TypeAHint> typeAHintsT2 = new ArrayList<>();
+        List<TypeAHint> typeAHints3 = new ArrayList<>();
         //20: invokevirtual #58 // Method bcGen/GenericMethod1.first:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-        typeAHintsT2.add(new TypeAHint(
+        typeAHints3.add(new TypeAHint(
                         20, 
                         Arrays.asList(TypeA.TYPEA_DOUBLE, TypeA.TYPEA_INT))
         );
         InstructionTypeArguments instructionTypeArgumentsT2 = 
-            new InstructionTypeArguments(typeAHintsT2);
-        typeAHintsT2 = new ArrayList<TypeAHint>();
-        typeAHintsT2.add(
+            new InstructionTypeArguments(typeAHints3);
+        List<TypeAHint> typeAHints4 = new ArrayList<TypeAHint>();
+        typeAHints4.add(
             new TypeAHint(20, 
                 Arrays.asList(TypeA.TYPEA_DOUBLE))
         );
         InvokeReturnType invokeReturnTypeT2 =
             new InvokeReturnType(
-                typeAHintsT2.size(), 
-                typeAHintsT2
+                typeAHints4.size(), 
+                typeAHints4
             );
         t2Attrs.add(instructionTypeArgumentsT2);
         t2Attrs.add(invokeReturnTypeT2);
-        res.put("t2", t2Attrs);
+        methodAttributes.put("t2", t2Attrs);
+
+        res[1] = methodAttributes;
 
         return res;
     }
     
     @SuppressWarnings("Convert2Diamond")
-    public static Map<String, List<Attribute>> genArrayCopyAttr(){
+    public static Object[] genArrayCopyAttr(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genArrayCopyAttr, for ArrayCopy1$.class");
-        Map<String, List<Attribute>> res = new HashMap<>();
+        Object[] res = new Object[2];
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
+        res[0] = fieldAttributes;       
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
 
         List<Attribute> attrs = new ArrayList<>();
         //for method copy
@@ -219,7 +230,7 @@ public class AttributeAdder {
                     new TypeA(TypeA.M_KIND, 0)
                 )));
         //26: invokevirtual #47 // Method scala/runtime/ScalaRunTime$.array_update:(Ljava/lang/Object;ILjava/lang/Object;)V
-        typeAHints.add( //TODO
+        typeAHints.add(
             new TypeAHint(26, 
                 Arrays.asList(
                     new TypeA(TypeA.M_KIND, 0)
@@ -242,122 +253,157 @@ public class AttributeAdder {
         attrs.add(methodParameterType);
         attrs.add(instructionTypeArguments);
         attrs.add(invokeReturnType);
-        res.put("copy", attrs);
-
+        methodAttributes.put("copy", attrs);
+        res[1] = methodAttributes;
         return res;
     }
 
-    //for testGenericClass1.class
-    public static Map<String, Attribute> genMethodAttr1(){
+    public static Object[] genGenericClass1(){
         System.out.println("Changing file:" + file);
-        System.out.println("Using genMethodAttr1, for testGenericClass1.class");
-        Map<String, Attribute> attrs = new HashMap<>();
+        System.out.println("Using genGenericClass1, for GenericClass1.class");
+        Object[] res = new Object[2];
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
 
-        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(5, "I");
-        attr1.addToAttribute(12, "D");
-        attr1.addToAttribute(16 , "I");
-        attr1.addToAttribute(21 , "D");
-        attr1.addToAttribute(30 , "D|I");
-        attr1.addToAttribute(37 , "L|C");
-        attr1.addToAttribute(41 , "I");
-        attr1.addToAttribute(45 , "D");
-        attr1.addToAttribute(51 , "I");
-        attrs.put("t1", attr1);
+        //for field value:
+        FieldType valueFieldType = new FieldType(
+            new TypeB(TypeB.K_KIND, 0));
+        List<Attribute> valueFieldAttributes = new ArrayList<>();
+        valueFieldAttributes.add(valueFieldType);
+        fieldAttributes.put("value", valueFieldAttributes);
+        res[0] = fieldAttributes;
 
-        return attrs;
+        //for methods:
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
+
+        //for constructor
+        MethodParameterType methodParameterTypeConstructor = 
+            new MethodParameterType(
+                1, 
+                Arrays.asList(new TypeB(TypeB.K_KIND, 0))
+            );
+        methodAttributes.put("<init>",
+            Arrays.asList(methodParameterTypeConstructor)
+        );
+        
+        
+        //for method value()
+        //getter for field value
+        MethodReturnType methodReturnTypeValue = 
+            new MethodReturnType(
+                new TypeB(TypeB.K_KIND, 0)
+            );
+        methodAttributes.put("value",
+            Arrays.asList(methodReturnTypeValue)
+        );
+
+        //for method value_$eq
+        //setter for field value
+        MethodParameterType methodParameterTypeValueEq = 
+            new MethodParameterType(
+                1, 
+                Arrays.asList(new TypeB(TypeB.K_KIND, 0))
+            );
+        methodAttributes.put("value_$eq",
+            Arrays.asList(methodParameterTypeValueEq)
+        );
+
+        //for method get
+        //def get(): A
+        MethodReturnType methodReturnTypeGet = 
+            new MethodReturnType(
+                new TypeB(TypeB.K_KIND, 0)
+            );
+        InstructionTypeArguments instructionTypeArgumentsGet = 
+            new InstructionTypeArguments(
+                Arrays.asList(new TypeAHint(1, 
+                    Arrays.asList(
+                        new TypeA(TypeA.K_KIND, 0)
+                    )))
+            );
+        InvokeReturnType invokeReturnTypeGet =
+            new InvokeReturnType(1,
+                Arrays.asList(new TypeAHint(1, 
+                    Arrays.asList(
+                        new TypeA(TypeA.K_KIND, 0)
+                    )))
+            );
+        methodAttributes.put("get",
+            Arrays.asList(methodReturnTypeGet, 
+                instructionTypeArgumentsGet, 
+                invokeReturnTypeGet)
+        );
+
+        //for method set
+        //def set(x: A): Unit
+        MethodParameterType methodParameterTypeSet = 
+            new MethodParameterType(
+                1, 
+                Arrays.asList(new TypeB(TypeB.K_KIND, 0))
+            );
+        InstructionTypeArguments instructionTypeArgumentsSet =
+            new InstructionTypeArguments(
+                Arrays.asList(new TypeAHint(2, 
+                    Arrays.asList(
+                        new TypeA(TypeA.K_KIND, 0)
+                    )))
+            );
+        methodAttributes.put("set",
+            Arrays.asList(methodParameterTypeSet, 
+                instructionTypeArgumentsSet)
+        );
+
+        res[1] = methodAttributes;
+
+        return res;
     }
-
-    //for testGenericMethod1.class
-    public static Map<String, Attribute> genMethodAttr2(){
+    
+    public static Object[] genTestGenericClass1(){
         System.out.println("Changing file:" + file);
-        System.out.println("Using genMethodAttr2, for testGenericMethod1.class");
-        Map<String, Attribute> attrs = new HashMap<>();
+        System.out.println("Using genTestGenericClass1, for testGenericClass1$.class");
+        Object[] res = new Object[2];
+        Map<String, List<Attribute>> fieldAttributes = new HashMap<>();
+        res[0] = fieldAttributes;
+        Map<String, List<Attribute>> methodAttributes = new HashMap<>();
 
-        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(16, "I|L");
-        attr1.addToAttribute(32, "D|C");
-        attrs.put("t1", attr1);
+        //for methods:
+        //for method t1
+        //def t1(): Unit
+        List<Attribute> t1Attrs = new ArrayList<>();
+        List<TypeAHint> typeAHints1 = new ArrayList<>();
+        //9: invokespecial #37 // Method bcGen/GenericClass1."<init>":(Ljava/lang/Object;)V
+        typeAHints1.add(new TypeAHint(
+                        9, 
+                        Arrays.asList(TypeA.TYPEA_INT))
+        );
+        //27: invokevirtual #47 // Method bcGen/GenericClass1.set:(Ljava/lang/Object;)V
+        typeAHints1.add(new TypeAHint(
+                        27, 
+                        Arrays.asList(TypeA.TYPEA_INT))
+        );
+        InstructionTypeArguments instructionTypeArgumentsT1 = 
+            new InstructionTypeArguments(typeAHints1);
 
-        GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
-        attr2.addToAttribute(14, "I");
-        attr2.addToAttribute(38, "J");
-        attrs.put("t2", attr2);
-
-        return attrs;
-    }
-
-    //for GenericMethod1.class
-    public static Map<String, Attribute> genMethodAttr3(){
-        System.out.println("Changing file:" + file);
-        System.out.println("Using genMethodAttr3, for GenericMethod1.class");
-        Map<String, Attribute> attrs = new HashMap<>();
-
-        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(0, "M0");
-        attrs.put("identity", attr1);
-
-        GenericsMethodAttribute attr2 = new GenericsMethodAttribute();
-        attr2.addToAttribute(17, "M0");
-        attr2.addToAttribute(26, "M0");
-        attrs.put("printTypeInfo", attr2);
-
-        GenericsMethodAttribute attr3 = new GenericsMethodAttribute();
-        attr3.addToAttribute(15, "M0");
-        attr3.addToAttribute(19, "M1");
-        attrs.put("makeListOfTwo", attr3);
-
-        return attrs;
-    }
-
-    //for ArrayCopy$.class
-    public static Map<String, Attribute> genMethodAttr4(){
-        System.out.println("Changing file:" + file);
-        System.out.println("Using genMethodAttr4, for ArrayCopy$.class");
-        Map<String, Attribute> attrs = new HashMap<>();
-
-        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(7, "M0");
-        attr1.addToAttribute(23, "M0");
-        attr1.addToAttribute(26, "M0");
-        attrs.put("copy", attr1);
-
-        return attrs;
-    }
-
-    //for Checksum$.class
-    public static Map<String, Attribute> genMethodAttr5(){
-        System.out.println("Changing file:" + file);
-        System.out.println("Using genMethodAttr4, for Checksum$.class");
-        Map<String, Attribute> attrs = new HashMap<>();
-
-        GenericsMethodAttribute attr1 = new GenericsMethodAttribute();
-        attr1.addToAttribute(10, "M0");
-        attr1.addToAttribute(22, "M0");
-        attr1.addToAttribute(25, "M0");
-        attrs.put("checksum", attr1);
-
-        return attrs;
-    }
-    //for testGenericMethod1$.class
-    public static GenericsAttribute genAttribute1() {
-        GenericsAttribute attr = new GenericsAttribute();
-        attr.addToAttribute("t1", 12, "I|L");
-        attr.addToAttribute("t1", 21, "D|C");
-        attr.addToAttribute("t1", 38 , "I");
-        return attr;
-    }
-
-    //for testGenericClass1$.class
-    public static GenericsAttribute genAttribute2(){
-        GenericsAttribute attr = new GenericsAttribute();
-        attr.addToAttribute("t1", 4, "I");
-        attr.addToAttribute("t1", 10, "D");
-        attr.addToAttribute("t1", 19, "D|I");
-        attr.addToAttribute("t1", 27, "L|C");
-        attr.addToAttribute("t1", 32, "I");
-        attr.addToAttribute("t1", 37, "D");
-        attr.addToAttribute("t1", 44, "I");
-        return attr;
+        List<TypeAHint> typeAHints2 = new ArrayList<TypeAHint>();
+        //14: invokevirtual #40 // Method bcGen/GenericClass1.get:()Ljava/lang/Object;
+        typeAHints2.add(new TypeAHint(
+                        14, 
+                        Arrays.asList(TypeA.TYPEA_INT))
+        );
+        //31: invokevirtual #40 // Method bcGen/GenericClass1.get:()Ljava/lang/Object;
+        typeAHints2.add(new TypeAHint(
+                        31, 
+                        Arrays.asList(TypeA.TYPEA_INT))
+        );
+        InvokeReturnType invokeReturnTypeT1 =
+            new InvokeReturnType(
+                typeAHints2.size(), 
+                typeAHints2
+            );  
+            
+        t1Attrs.add(instructionTypeArgumentsT1);
+        t1Attrs.add(invokeReturnTypeT1);
+        methodAttributes.put("t1", t1Attrs);
+        res[1] = methodAttributes;
+        return res;
     }
 }
