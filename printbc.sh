@@ -16,4 +16,4 @@ DIR=$(dirname "$CLASSFILE")
 FILENAME=$(basename "$CLASSFILE")
 CLASSNAME="${FILENAME%.class}"
 
-javap -v -cp "$DIR" "$CLASSNAME"
+javap -v -p -cp "$DIR" "$CLASSNAME"
