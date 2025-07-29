@@ -11,12 +11,9 @@ public class TypeA {
     public static final byte BOOLEAN = 'Z';
     public static final byte REFERENCE = 'L';
 
-    
-
     public static final byte K_KIND = 'K';
     public static final byte M_KIND = 'M';
-    // public static final byte PRIMITIVE_KIND = 'P';
-    
+
     public static final TypeA TYPEA_BYTE = 
         new TypeA(BYTE, 0);
     public static final TypeA TYPEA_CHAR =
@@ -37,11 +34,20 @@ public class TypeA {
         new TypeA(REFERENCE, 0);
 
     private final byte kind;
+    private final int outerClassIndex;
     private final int index;
 
     public TypeA(byte kind, int index) {
         this.kind = kind;
         this.index = index;
+        this.outerClassIndex = 0;
+    }
+
+    public TypeA(byte kind, int outerClassIndex, int index){
+        this.kind = kind;
+        this.index = index;
+        this.outerClassIndex = outerClassIndex;
+
     }
 
     public byte getKind() {
@@ -50,5 +56,9 @@ public class TypeA {
 
     public int getIndex() {
         return index;
+    }
+
+    public int getOuterClassIndex() {
+        return outerClassIndex;
     }
 }

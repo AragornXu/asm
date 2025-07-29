@@ -12,6 +12,18 @@ import org.objectweb.asm.Label;
 import com.asm.generics.attributes.reified.typehints.TypeA;
 import com.asm.generics.attributes.reified.typehints.TypeAHint;
 
+/*
+InvokeReturnType_attribute {
+	u2 attribute_name_index;
+	u4 attribute_length;
+	u2 typehint_length;
+	{ 	u2 byecode_offset
+		u1 K_M_indicator
+        u2 outer_class_indicator
+        u2 index
+    } typeHints[typehint_length];
+}
+*/
 public class InvokeReturnType extends Attribute{
     private final int count;
     private final List<TypeAHint> typeList;
@@ -55,9 +67,11 @@ public class InvokeReturnType extends Attribute{
             for (int j = 0; j < typeAnum; j++){
                 byte kind = (byte) cr.readByte(cur);
                 cur += 1;
+                int outerClassIndex = cr.readUnsignedShort(cur);
+                cur += 2;
                 int index = cr.readUnsignedShort(cur);
                 cur += 2;
-                typeAs.add(new TypeA(kind, index));
+                typeAs.add(new TypeA(kind, outerClassIndex, index));
             }
             typeHints.add(new TypeAHint(bytecodeOffset, typeAs));
         }
@@ -73,6 +87,7 @@ public class InvokeReturnType extends Attribute{
             bv.putShort(typeHint.getTypeList().size());
             for (TypeA typeA : typeHint.getTypeList()) {
                 bv.putByte(typeA.getKind());
+                bv.putShort(typeA.getOuterClassIndex());
                 bv.putShort(typeA.getIndex());
             }
         }

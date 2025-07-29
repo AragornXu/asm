@@ -11,6 +11,17 @@ import org.objectweb.asm.Label;
 
 import com.asm.generics.attributes.reified.typehints.TypeB;
 
+/*
+MethodParameterType_attribute {
+	u2 attribute_name_index;
+	u4 attribute_length;
+	u2 parameter_count;
+	{	u1 K_M_indicator
+		u2 outer_class_indicator
+        u2 index
+    } typeBs[parameter_count];
+}
+*/
 public class MethodParameterType extends Attribute{
     private final int count;
     private final List<TypeB> typeList;
@@ -48,9 +59,11 @@ public class MethodParameterType extends Attribute{
         for (int i = 0; i < parameterCount; i++) {
             byte kind = (byte) cr.readByte(cur);
             cur += 1;
+            int outerClassIndex = cr.readUnsignedShort(cur);
+            cur += 2;
             int index = cr.readUnsignedShort(cur);
             cur += 2;
-            typeBs.add(new TypeB(kind, index));
+            typeBs.add(new TypeB(kind, outerClassIndex, index));
         }
         return new MethodParameterType(parameterCount, typeBs);
     }
@@ -61,6 +74,7 @@ public class MethodParameterType extends Attribute{
         bv.putShort(count);
         for (TypeB typeB : typeList) {
             bv.putByte(typeB.getKind());
+            bv.putShort(typeB.getOuterClassIndex());
             bv.putShort(typeB.getIndex());
         }
         return bv;

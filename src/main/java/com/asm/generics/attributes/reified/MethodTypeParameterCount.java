@@ -6,6 +6,13 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.ClassWriter;
 
+/*
+MethodTypeParameterCount_attribute {
+    u2 attribute_name_index;
+	u4 attribute_length;
+	u2 count;
+}
+*/
 public class MethodTypeParameterCount extends Attribute{
     private final int count;
     public MethodTypeParameterCount() {
