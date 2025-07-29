@@ -9,8 +9,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 
-import com.asm.generics.attributes.reified.typehints.TypeA;
-import com.asm.generics.attributes.reified.typehints.TypeAHint;
+import com.asm.generics.attributes.reified.typehints.TypeB;
+import com.asm.generics.attributes.reified.typehints.TypeBHint;
 
 /*
 InvokeReturnType_attribute {
@@ -26,13 +26,13 @@ InvokeReturnType_attribute {
 */
 public class InvokeReturnType extends Attribute{
     private final int count;
-    private final List<TypeAHint> typeList;
+    private final List<TypeBHint> typeList;
     public InvokeReturnType() {
         super("InvokeReturnType");
         this.count = 0;
         this.typeList = new ArrayList<>();
     }
-    public InvokeReturnType(int count, List<TypeAHint> typeList) {
+    public InvokeReturnType(int count, List<TypeBHint> typeList) {
         super("InvokeReturnType");
         assert count == typeList.size();
         this.count = count;
@@ -43,7 +43,7 @@ public class InvokeReturnType extends Attribute{
         return count;
     }
 
-    public List<TypeAHint> getTypeList() {
+    public List<TypeBHint> getTypeList() {
         return typeList;
     }
 
@@ -57,7 +57,7 @@ public class InvokeReturnType extends Attribute{
         int cur = off;
         int typeHintLength = cr.readUnsignedShort(cur);
         cur += 2;
-        List<TypeAHint> typeHints = new ArrayList<>();
+        List<TypeBHint> typeHints = new ArrayList<>();
         for (int i = 0; i < typeHintLength; i++){
             int bytecodeOffset = cr.readUnsignedShort(cur);
             cur += 2;
@@ -67,9 +67,11 @@ public class InvokeReturnType extends Attribute{
             cur += 2;
             int index = cr.readUnsignedShort(cur);
             cur += 2;
-            List<TypeA> typeAs = new ArrayList<>();
-            typeAs.add(new TypeA(kind, outerClassIndex, index));
-            typeHints.add(new TypeAHint(bytecodeOffset, typeAs));
+            typeHints.add(
+                new TypeBHint(
+                    bytecodeOffset, 
+                    new TypeB(kind, outerClassIndex, index))
+            );
         }
         return new InvokeReturnType(typeHintLength, typeHints);
     }
@@ -78,13 +80,12 @@ public class InvokeReturnType extends Attribute{
     public ByteVector write(ClassWriter cw, byte[] code, int codeLength, int maxStack, int maxLocals) {
         ByteVector bv = new ByteVector();
         bv.putShort(count);
-        for (TypeAHint typeHint : typeList) {
+        for (TypeBHint typeHint : typeList) {
             bv.putShort(typeHint.getBytecodeOffset());
-            assert typeHint.getTypeList().size() == 1;
-            TypeA typeA = typeHint.getTypeList().get(0);
-            bv.putByte(typeA.getKind());
-            bv.putShort(typeA.getOuterClassIndex());
-            bv.putShort(typeA.getIndex());
+            TypeB typeB = typeHint.getTypeB();
+            bv.putByte(typeB.getKind());
+            bv.putShort(typeB.getOuterClassIndex());
+            bv.putShort(typeB.getIndex());
         }
         return bv;
     }
