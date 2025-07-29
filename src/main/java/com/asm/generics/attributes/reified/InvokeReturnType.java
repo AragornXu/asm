@@ -61,18 +61,14 @@ public class InvokeReturnType extends Attribute{
         for (int i = 0; i < typeHintLength; i++){
             int bytecodeOffset = cr.readUnsignedShort(cur);
             cur += 2;
-            int typeAnum = cr.readUnsignedShort(cur);
+            byte kind = (byte) cr.readByte(cur);
+            cur += 1;
+            int outerClassIndex = cr.readUnsignedShort(cur);
+            cur += 2;
+            int index = cr.readUnsignedShort(cur);
             cur += 2;
             List<TypeA> typeAs = new ArrayList<>();
-            for (int j = 0; j < typeAnum; j++){
-                byte kind = (byte) cr.readByte(cur);
-                cur += 1;
-                int outerClassIndex = cr.readUnsignedShort(cur);
-                cur += 2;
-                int index = cr.readUnsignedShort(cur);
-                cur += 2;
-                typeAs.add(new TypeA(kind, outerClassIndex, index));
-            }
+            typeAs.add(new TypeA(kind, outerClassIndex, index));
             typeHints.add(new TypeAHint(bytecodeOffset, typeAs));
         }
         return new InvokeReturnType(typeHintLength, typeHints);
@@ -84,12 +80,11 @@ public class InvokeReturnType extends Attribute{
         bv.putShort(count);
         for (TypeAHint typeHint : typeList) {
             bv.putShort(typeHint.getBytecodeOffset());
-            bv.putShort(typeHint.getTypeList().size());
-            for (TypeA typeA : typeHint.getTypeList()) {
-                bv.putByte(typeA.getKind());
-                bv.putShort(typeA.getOuterClassIndex());
-                bv.putShort(typeA.getIndex());
-            }
+            assert typeHint.getTypeList().size() == 1;
+            TypeA typeA = typeHint.getTypeList().get(0);
+            bv.putByte(typeA.getKind());
+            bv.putShort(typeA.getOuterClassIndex());
+            bv.putShort(typeA.getIndex());
         }
         return bv;
     }
