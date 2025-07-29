@@ -31,8 +31,9 @@ public class OSAMethodVisitor extends MethodVisitor {
     private boolean containClassLevelAttribute = false;
     private Map<Integer, Integer> offsetMap;
     private final boolean printLocal = true;
-    private final boolean printStack = true;
+    private final boolean printStack = false;
     private final boolean printTypeHint = true;
+    private final boolean skipLabels = true;
 
     public OSAMethodVisitor(int api) {
         super(api);
@@ -116,6 +117,10 @@ public class OSAMethodVisitor extends MethodVisitor {
                 int offset = offsetMap.getOrDefault(offsetMapIndex, -1);
                 if (insn instanceof LabelNode) {
                     // System.out.print(" ");
+                    if (skipLabels) {
+                        offsetMapIndex++;
+                        continue;
+                    }
                     System.out.printf("[%3d | offset: %-3d]  %-61.61s", offsetMapIndex, offset, instrStr);
                 } else {
                     // System.out.print("  ");

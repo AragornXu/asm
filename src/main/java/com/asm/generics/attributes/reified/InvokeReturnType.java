@@ -22,6 +22,7 @@ public class InvokeReturnType extends Attribute{
     }
     public InvokeReturnType(int count, List<TypeAHint> typeList) {
         super("InvokeReturnType");
+        assert count == typeList.size();
         this.count = count;
         this.typeList = typeList;
     }

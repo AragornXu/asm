@@ -51,7 +51,7 @@ public class OSA1Test {
     @Test
     public void test7() throws Exception{
         OperandStackAnalyzer osa = new OperandStackAnalyzer();
-        osa.run("genClasses/attributes/testGenericMethod1$_Modified.class");
+        osa.run("genClasses/modified/bcGen/testGenericMethod$.class");
     }
 
     @Test
