@@ -17,11 +17,11 @@ import com.asm.generics.attributes.reified.MethodParameterType;
 import com.asm.generics.attributes.reified.MethodReturnType;
 import com.asm.generics.attributes.reified.MethodTypeParameterCount;
 
-public class AddFieldMethodAttribute {
-    public byte[] addMethodAttribute(Map<String, List<Attribute>> methodAttributes, Map<String, List<Attribute>> fieldAttributes, String path) throws Exception {
+public class AddAttributes {
+    public byte[] addAttributes(List<Attribute> classAttributes, Map<String, List<Attribute>> methodAttributes, Map<String, Attribute> fieldAttributes, String path) throws Exception {
         ClassReader cr = new ClassReader(Files.newInputStream(Paths.get(path)));
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor cv = new ClassAttrVisitor(Opcodes.ASM9, cw, methodAttributes, fieldAttributes);
+        ClassVisitor cv = new ClassAttrVisitor(Opcodes.ASM9, cw, classAttributes, methodAttributes, fieldAttributes);
         cr.accept(cv, new Attribute[] { 
             new GenericsAttribute(), 
             new GenericsMethodAttribute(),
