@@ -52,9 +52,9 @@ public class AttributeAdder {
         // path = srcDirectory + packageName + "/" + file;
         // res = genTestGenericMethod$(); //change here to the specific attribute adder function
 
-        // file = "ArrayCopy$";
-        // path = srcDirectory + packageName + "/" + file;
-        // res = genArrayCopy$(); //change here to the specific attribute adder function
+        file = "ArrayCopy$";
+        path = srcDirectory + packageName + "/" + file;
+        res = genArrayCopy$(); //change here to the specific attribute adder function
 
         // file = "testArray$";
         // path = srcDirectory + packageName + "/" + file;
@@ -64,9 +64,9 @@ public class AttributeAdder {
         // path = srcDirectory + packageName + "/" + file;
         // res = genPair(); //change here to the specific attribute adder function
 
-        file = "Classes/testPair$";
-        path = srcDirectory + packageName + "/" + file;
-        res = genTestPair$(); //change here to the specific attribute adder function
+        // file = "Classes/testPair$";
+        // path = srcDirectory + packageName + "/" + file;
+        // res = genTestPair$(); //change here to the specific attribute adder function
 
         fieldAttributes = (Map<String, Attribute>) res[0];
         methodAttributes = (Map<String, List<Attribute>>) res[1];
@@ -92,7 +92,7 @@ public class AttributeAdder {
     public static Object[] genGenericMethod(){
         System.out.println("Changing file:" + path);
         System.out.println("Using genGenericMethod, for GenericMethod.class");
-        Object[] res = new Object[2];
+        Object[] res = new Object[3];
         Map<String, Attribute> fieldAttributes = new HashMap<>();
         res[0] = fieldAttributes;
         Map<String, List<Attribute>> methodAttributes = new HashMap<>();
@@ -155,7 +155,7 @@ public class AttributeAdder {
     public static Object[] genTestGenericMethod(){
         System.out.println("Changing file:" + path);
         System.out.println("Using genTestGenericMethod, for testGenericMethod.class");
-        Object[] res = new Object[2];
+        Object[] res = new Object[3];
         Map<String, Attribute> fieldAttributes = new HashMap<>();
         res[0] = fieldAttributes;
         Map<String, List<Attribute>> methodAttributes = new HashMap<>();
@@ -199,7 +199,7 @@ public class AttributeAdder {
     public static Object[] genTestGenericMethod$(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genTestGenericMethod$, for testGenericMethod$.class");
-        Object[] res = new Object[2];
+        Object[] res = new Object[3];
         Map<String, Attribute> fieldAttributes = new HashMap<>();
         res[0] = fieldAttributes;
         Map<String, List<Attribute>> methodAttributes = new HashMap<>();
@@ -368,7 +368,7 @@ public class AttributeAdder {
     public static Object[] genArrayCopy$(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genArrayCopyAttr, for ArrayCopy$.class");
-        Object[] res = new Object[2];
+        Object[] res = new Object[3];
         Map<String, Attribute> fieldAttributes = new HashMap<>();
         res[0] = fieldAttributes;       
         Map<String, List<Attribute>> methodAttributes = new HashMap<>();
@@ -402,7 +402,7 @@ public class AttributeAdder {
     public static Object[] genTestArray$(){
         System.out.println("Changing file:" + file);
         System.out.println("Using genArrayCopyAttr, for testArray$.class");
-        Object[] res = new Object[2];
+        Object[] res = new Object[3];
         Map<String, Attribute> fieldAttributes = new HashMap<>();
         res[0] = fieldAttributes;       
         Map<String, List<Attribute>> methodAttributes = new HashMap<>();
